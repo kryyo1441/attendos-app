@@ -19,9 +19,13 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --radius-sm: calc(var(--radius) - 4px);
@@ -54,49 +58,59 @@
   }
 }
 
+/* ─── Green Gradient Light Theme ─── */
 :root {
   --radius: 0.75rem;
-  --background: #fafafa;
-  --foreground: #0a0a0a;
+  --background: #f0fdf4;
+  --foreground: #052e16;
   --card: #ffffff;
-  --card-foreground: #0a0a0a;
+  --card-foreground: #052e16;
   --popover: #ffffff;
-  --popover-foreground: #0a0a0a;
-  --primary: #171717;
-  --primary-foreground: #fafafa;
-  --secondary: #f5f5f5;
-  --secondary-foreground: #171717;
-  --muted: #f5f5f5;
-  --muted-foreground: #737373;
-  --accent: #f5f5f5;
-  --accent-foreground: #171717;
+  --popover-foreground: #052e16;
+  --primary: #16a34a;
+  --primary-foreground: #ffffff;
+  --secondary: #dcfce7;
+  --secondary-foreground: #14532d;
+  --muted: #f0fdf4;
+  --muted-foreground: #4b5563;
+  --accent: #bbf7d0;
+  --accent-foreground: #14532d;
   --destructive: #ef4444;
-  --destructive-foreground: #fafafa;
-  --border: #e5e5e5;
-  --input: #e5e5e5;
-  --ring: #0a0a0a;
+  --destructive-foreground: #ffffff;
+  --success: #22c55e;
+  --success-foreground: #ffffff;
+  --border: #d1fae5;
+  --input: #d1fae5;
+  --ring: #16a34a;
+  --sidebar: #ecfdf5;
+  --sidebar-foreground: #052e16;
 }
 
+/* ─── Green Gradient Dark Theme ─── */
 .dark {
-  --background: #0a0a0a;
-  --foreground: #fafafa;
-  --card: #171717;
-  --card-foreground: #fafafa;
-  --popover: #171717;
-  --popover-foreground: #fafafa;
-  --primary: #fafafa;
-  --primary-foreground: #0a0a0a;
-  --secondary: #262626;
-  --secondary-foreground: #fafafa;
-  --muted: #262626;
-  --muted-foreground: #a3a3a3;
-  --accent: #262626;
-  --accent-foreground: #fafafa;
+  --background: #020a04;
+  --foreground: #ecfdf5;
+  --card: #0a1f12;
+  --card-foreground: #ecfdf5;
+  --popover: #0a1f12;
+  --popover-foreground: #ecfdf5;
+  --primary: #22c55e;
+  --primary-foreground: #052e16;
+  --secondary: #14532d;
+  --secondary-foreground: #dcfce7;
+  --muted: #14532d;
+  --muted-foreground: #86efac;
+  --accent: #166534;
+  --accent-foreground: #dcfce7;
   --destructive: #dc2626;
   --destructive-foreground: #fafafa;
-  --border: #262626;
-  --input: #262626;
-  --ring: #d4d4d4;
+  --success: #22c55e;
+  --success-foreground: #052e16;
+  --border: #14532d;
+  --input: #14532d;
+  --ring: #22c55e;
+  --sidebar: #071510;
+  --sidebar-foreground: #ecfdf5;
 }
 
 * {
@@ -107,6 +121,15 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Gradient background for auth pages */
+.auth-gradient {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 25%, #86efac 50%, #4ade80 75%, #22c55e 100%);
+}
+
+.dark .auth-gradient {
+  background: linear-gradient(135deg, #020a04 0%, #052e16 25%, #14532d 50%, #166534 75%, #15803d 100%);
 }
 
 ::-webkit-scrollbar {
@@ -134,8 +157,8 @@ body {
 }
 
 .dark .glass {
-  background: rgba(23, 23, 23, 0.7);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(10, 31, 18, 0.7);
+  border-bottom: 1px solid rgba(34, 197, 94, 0.1);
 }
 
 .animate-in {
