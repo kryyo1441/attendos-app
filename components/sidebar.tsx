@@ -15,7 +15,6 @@ import {
   GraduationCap,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { ThemeToggle } from "@/components/theme-toggle"
 import { signOut } from "@/lib/auth-client"
 
 interface SidebarContextType {
@@ -111,11 +110,6 @@ export function Sidebar() {
 
         {/* Footer */}
         <div className="border-t p-3 space-y-1">
-          {!collapsed && (
-            <div className="flex items-center justify-center pb-1">
-              <ThemeToggle />
-            </div>
-          )}
           <button
             onClick={handleSignOut}
             className={cn(
