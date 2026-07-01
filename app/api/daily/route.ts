@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { Prisma } from "@prisma/client"
+import { Weekday, type WeekdaySubject } from "@prisma/client"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
@@ -23,15 +23,15 @@ export async function GET(req: NextRequest) {
   }
 
   const dateObj = new Date(date)
-  const weekdays = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"]
+  const weekdays = [Weekday.SUNDAY, Weekday.MONDAY, Weekday.TUESDAY, Weekday.WEDNESDAY, Weekday.THURSDAY, Weekday.FRIDAY, Weekday.SATURDAY]
   const weekday = weekdays[dateObj.getDay()]
 
   // Get subjects for this weekday
-  const weekdaySubjects: Prisma.WeekdaySubjectGetPayload<{ include: { subject: true } }>[] =
+  const weekdaySubjects: (WeekdaySubject & { subject: { id: string; name: string; type: string; color: string; userId: string; createdAt: Date; updatedAt: Date } })[] =
     await prisma.weekdaySubject.findMany({
-    where: { weekday: weekday as any, userId: user.id },
-    include: { subject: true },
-  })
+      where: { weekday, userId: user.id },
+      include: { subject: true },
+    })
 
   // Check if it's a holiday
   const holiday = await prisma.holiday.findFirst({
