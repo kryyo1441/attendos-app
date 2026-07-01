@@ -1,8 +1,27 @@
 import { NextRequest, NextResponse } from "next/server"
-import { Weekday, type WeekdaySubject } from "@prisma/client"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
+
+const weekdays = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"] as const
+
+type Weekday = (typeof weekdays)[number]
+
+type WeekdaySubjectWithSubject = {
+  id: string
+  weekday: Weekday
+  subjectId: string
+  userId: string
+  subject: {
+    id: string
+    name: string
+    type: string
+    color: string
+    userId: string
+    createdAt: Date
+    updatedAt: Date
+  }
+}
 
 async function getUser(req: NextRequest) {
   const session = await auth.api.getSession({
@@ -23,15 +42,13 @@ export async function GET(req: NextRequest) {
   }
 
   const dateObj = new Date(date)
-  const weekdays = [Weekday.SUNDAY, Weekday.MONDAY, Weekday.TUESDAY, Weekday.WEDNESDAY, Weekday.THURSDAY, Weekday.FRIDAY, Weekday.SATURDAY]
   const weekday = weekdays[dateObj.getDay()]
 
   // Get subjects for this weekday
-  const weekdaySubjects: (WeekdaySubject & { subject: { id: string; name: string; type: string; color: string; userId: string; createdAt: Date; updatedAt: Date } })[] =
-    await prisma.weekdaySubject.findMany({
+  const weekdaySubjects = (await prisma.weekdaySubject.findMany({
       where: { weekday, userId: user.id },
       include: { subject: true },
-    })
+    })) as WeekdaySubjectWithSubject[]
 
   // Check if it's a holiday
   const holiday = await prisma.holiday.findFirst({
