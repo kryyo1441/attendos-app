@@ -4,8 +4,8 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",
 
-    name: "Attedos",
-    short_name: "Attedos",
+    name: "Attendos",
+    short_name: "AttendosApp",
 
     description: "A Progressive Web App for personal attendance tracking.",
 
