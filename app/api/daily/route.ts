@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
+import { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
@@ -26,7 +27,8 @@ export async function GET(req: NextRequest) {
   const weekday = weekdays[dateObj.getDay()]
 
   // Get subjects for this weekday
-  const weekdaySubjects = await prisma.weekdaySubject.findMany({
+  const weekdaySubjects: Prisma.WeekdaySubjectGetPayload<{ include: { subject: true } }>[] =
+    await prisma.weekdaySubject.findMany({
     where: { weekday: weekday as any, userId: user.id },
     include: { subject: true },
   })
