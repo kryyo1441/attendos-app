@@ -21,6 +21,16 @@ type AttendanceRecordWithSubject = {
   }
 }
 
+type SubjectRow = {
+  id: string
+  name: string
+  type: string
+  color: string
+  userId: string
+  createdAt: Date
+  updatedAt: Date
+}
+
 async function getUser(req: NextRequest) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -46,9 +56,9 @@ export async function GET(req: NextRequest) {
   const overallPercentage = conductedCount > 0 ? (presentCount / conductedCount) * 100 : 0
 
   // Per-subject stats
-  const subjects = await prisma.subject.findMany({
+  const subjects = (await prisma.subject.findMany({
     where: { userId: user.id },
-  })
+  })) as SubjectRow[]
 
   const subjectStats = subjects.map((subject) => {
     const subjectRecords = records.filter((r) => r.subjectId === subject.id)
