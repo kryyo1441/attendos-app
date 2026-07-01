@@ -3,6 +3,24 @@ import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 
+type AttendanceRecordWithSubject = {
+  id: string
+  date: Date
+  subjectId: string
+  status: "PRESENT" | "ABSENT" | "NO_LECTURE"
+  userId: string
+  createdAt: Date
+  subject: {
+    id: string
+    name: string
+    type: string
+    color: string
+    userId: string
+    createdAt: Date
+    updatedAt: Date
+  }
+}
+
 async function getUser(req: NextRequest) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -15,10 +33,10 @@ export async function GET(req: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   // Get overall stats
-  const records = await prisma.attendanceRecord.findMany({
+  const records = (await prisma.attendanceRecord.findMany({
     where: { userId: user.id },
     include: { subject: true },
-  })
+  })) as AttendanceRecordWithSubject[]
 
   const presentCount = records.filter((r) => r.status === "PRESENT").length
   const conductedCount = records.filter(
