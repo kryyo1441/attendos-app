@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { GraduationCap } from "lucide-react"
+import { Github, GraduationCap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 
@@ -18,6 +18,16 @@ export function HeroNav() {
       </div>
 
       <div className="flex items-center gap-3">
+        <Button variant="outline" className="rounded-xl" asChild>
+          <a
+            href="https://github.com/kryyo1441/attendos-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Github className="mr-2 h-4 w-4" />
+            GitHub
+          </a>
+        </Button>
         <ThemeToggle />
         <Button
           variant="ghost"
