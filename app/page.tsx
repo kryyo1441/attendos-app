@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "@/lib/auth-client"
 import { HeroNav } from "@/components/hero-nav"
@@ -14,6 +14,7 @@ import {
   BookOpen,
   Bell,
   ArrowRight,
+  Download,
 } from "lucide-react"
 
 const features = [
@@ -58,6 +59,9 @@ const features = [
 export default function HomePage() {
   const { data: session, isPending } = useSession()
   const router = useRouter()
+  const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null)
+  const [isInstalled, setIsInstalled] = useState(false)
+  const [isInstalling, setIsInstalling] = useState(false)
 
   useEffect(() => {
     if (!isPending && session) {
@@ -65,12 +69,44 @@ export default function HomePage() {
     }
   }, [session, isPending, router])
 
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (event: Event) => {
+      event.preventDefault()
+      setInstallPrompt(event as BeforeInstallPromptEvent)
+    }
+
+    const handleAppInstalled = () => {
+      setIsInstalled(true)
+      setInstallPrompt(null)
+    }
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt)
+    window.addEventListener("appinstalled", handleAppInstalled)
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt)
+      window.removeEventListener("appinstalled", handleAppInstalled)
+    }
+  }, [])
+
+  const handleInstallApp = async () => {
+    if (!installPrompt) return
+
+    setIsInstalling(true)
+    await installPrompt.prompt()
+    await installPrompt.userChoice
+    setIsInstalling(false)
+    setInstallPrompt(null)
+  }
+
+  const canInstall = Boolean(installPrompt) && !isInstalled
+
   if (isPending) {
     return null
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-background/50 relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-b from-background via-background to-background/50 relative overflow-hidden">
       {/* Animated background gradient orbs */}
       <div className="absolute top-0 left-1/4 w-72 h-72 bg-primary/10 rounded-full blur-3xl opacity-50 animate-pulse" />
       <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-green-500/10 rounded-full blur-3xl opacity-40 animate-pulse" style={{ animationDelay: "1s" }} />
@@ -93,10 +129,10 @@ export default function HomePage() {
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-tight">
               Never Miss Your{" "}
               <span className="relative inline-block">
-                <span className="bg-gradient-to-r from-primary via-emerald-500 to-teal-500 bg-clip-text text-transparent">
+                <span className="bg-linear-to-r from-primary via-emerald-500 to-teal-500 bg-clip-text text-transparent">
                   Attendance Again
                 </span>
-                <span className="absolute bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-primary to-emerald-500 blur-sm opacity-50" />
+                <span className="absolute bottom-2 left-0 right-0 h-1 bg-linear-to-r from-primary to-emerald-500 blur-sm opacity-50" />
               </span>
             </h1>
             
@@ -114,6 +150,18 @@ export default function HomePage() {
                 Get Started
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
+              {canInstall && (
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="rounded-xl border-2 border-primary/30 bg-background/80 backdrop-blur hover:border-primary/60"
+                  onClick={handleInstallApp}
+                  disabled={isInstalling}
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  {isInstalling ? "Opening..." : "Install App"}
+                </Button>
+              )}
               <Button
                 size="lg"
                 variant="outline"
@@ -148,7 +196,7 @@ export default function HomePage() {
                   className="group relative border-primary/10 hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 overflow-hidden"
                 >
                   {/* Gradient background on hover */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                  <div className={`absolute inset-0 bg-linear-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
                   
                   <CardHeader className="relative">
                     <div className="mb-4">
@@ -166,7 +214,7 @@ export default function HomePage() {
                   </CardContent>
 
                   {/* Animated border accent */}
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r from-primary to-emerald-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
                 </Card>
               )
             })}
@@ -197,9 +245,9 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="relative px-4 py-20 md:py-28 z-10">
         <div className="mx-auto max-w-4xl">
-          <div className="relative rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/5 to-emerald-500/5 p-8 md:p-12 overflow-hidden group">
+          <div className="relative rounded-3xl border border-primary/20 bg-linear-to-br from-primary/5 to-emerald-500/5 p-8 md:p-12 overflow-hidden group">
             {/* Animated gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 bg-linear-to-r from-primary/10 via-transparent to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             
             <div className="relative text-center">
               <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
@@ -224,8 +272,18 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="relative border-t border-border/50 py-8 px-4 text-center text-sm text-muted-foreground z-10">
         <p>&copy; 2026 Attendos. Built with care for students.</p>
+        {!canInstall && (
+          <p className="mt-2 text-xs text-muted-foreground">
+            On iPhone or unsupported browsers, use the browser menu and choose Add to Home Screen.
+          </p>
+        )}
       </footer>
     </div>
   )
+}
+
+type BeforeInstallPromptEvent = Event & {
+  prompt: () => Promise<void>
+  userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>
 }
 
